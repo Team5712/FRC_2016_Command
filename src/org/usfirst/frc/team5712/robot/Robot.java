@@ -31,8 +31,6 @@ public class Robot extends IterativeRobot {
 	public static PneumaticSubsystem pneumaticSubsystem = new PneumaticSubsystem();
 	
 	public static OI oi;
-    
-	// Test commit
 	
     //Autonomous commands
     CommandGroup autonomousSelected;
