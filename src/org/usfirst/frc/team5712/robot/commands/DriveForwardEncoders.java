@@ -21,7 +21,7 @@ public class DriveForwardEncoders extends Command {
     }
 
     protected boolean isFinished() {
-        return Robot.driveSubsystem.isUnderLowbar();
+        return Robot.driveSubsystem.isAtTarget();
     }
 
     protected void end() {

@@ -1,5 +1,7 @@
 package org.usfirst.frc.team5712.robot.subsystems;
 
+import java.util.HashMap;
+
 import org.usfirst.frc.team5712.robot.RobotMap;
 import com.kauailabs.navx.frc.AHRS;
 
@@ -23,6 +25,10 @@ public class DriveSubsystem extends Subsystem {
 	
 	public AHRS gyro;
 	public SerialPort serial_port;
+	
+	private HashMap<Integer, Integer> encoderInfo = new HashMap<Integer, Integer>();
+	private HashMap<Integer, Double> angleInfo = new HashMap<Integer, Double>();
+	private HashMap<String, Double> speedInfo = new HashMap<String, Double>();
 		
 	byte update_rate_hz = 50;
 	public double degreesTurn;
@@ -42,6 +48,17 @@ public class DriveSubsystem extends Subsystem {
 		rightDriveEncoder = new Encoder(RobotMap.RIGHT_DRIVE_ENCODER_A, RobotMap.RIGHT_DRIVE_ENCODER_B, false, Encoder.EncodingType.k4X);
 	
 		gyro = new AHRS(SerialPort.Port.kMXP);
+		
+		// Set up the values for the HashMaps
+		// Encoder
+		encoderInfo.put(1, 198 * 17); // 17 is the ticks / inch ratio
+		encoderInfo.put(2, 233 * 17);
+		encoderInfo.put(3, 144 * 17);
+		encoderInfo.put(4, 144 * 17);
+		encoderInfo.put(5, 238 * 17);
+		// 
+		
+		
 	}
 	
 	public void display(){
@@ -93,7 +110,7 @@ public class DriveSubsystem extends Subsystem {
     	}
     }
     
-    public boolean isUnderLowbar(){
+    public boolean isAtTarget(){
     	if(leftDriveEncoder.get() > driveTickGoal){
     		return true;
     	}
@@ -142,6 +159,33 @@ public class DriveSubsystem extends Subsystem {
     		return false;
     	}
     }
+    
+    /**
+     * This method will get the pre-programmed angle, drive distance, and speed from the HashMaps. You can then call the 
+     * isAtTarget and isTurnedX methods to use these values in operation.
+     * 
+     * @param position
+     * the position (1-5) of where the robot is
+     * @param defense
+     * the defense that the robot will be confronting
+     */
+    public void loadDriveInfo(int position, String defense) {
+    	
+    	driveTickGoal = encoderInfo.get(position);
+    	degreesTurn = angleInfo.get(position);
+    	// speed = speedInfo.get(defense);
+    	
+    }
+    
+    // Get / Set methods
+    
+    public int getDriveTickGoal() {
+    	return driveTickGoal;
+    }
+    public void setDriveTickGoal(int driveTickGoal) {
+		this.driveTickGoal = driveTickGoal;
+	}
+    
 }
 
 
