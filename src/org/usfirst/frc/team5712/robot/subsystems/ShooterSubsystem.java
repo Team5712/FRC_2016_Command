@@ -114,14 +114,5 @@ public class ShooterSubsystem extends Subsystem {
 		shooterL.set(.5); 
 		shooterR.set(-.5);
     }
-    
-    public boolean isFast(){
-    	if((shooterL.get() >= .5) && (shooterR.get() <= -.5)){
-    		return true;
-    	}
-    	else{
-    		return false;
-    	}
-    }
 }
 
