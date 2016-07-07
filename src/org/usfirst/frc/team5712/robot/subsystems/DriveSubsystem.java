@@ -13,7 +13,7 @@ import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
- *
+ * 
  */
 public class DriveSubsystem extends Subsystem {
 	
@@ -26,14 +26,11 @@ public class DriveSubsystem extends Subsystem {
 	public AHRS gyro;
 	public SerialPort serial_port;
 	
-	private HashMap<Integer, Integer> encoderInfo = new HashMap<Integer, Integer>();
-	private HashMap<Integer, Double> angleInfo = new HashMap<Integer, Double>();
-	private HashMap<String, Double> speedInfo = new HashMap<String, Double>();
-		
-	byte update_rate_hz = 50;
-	public double degreesTurn;
+	byte updateRateHZ = 50;	
 	
-	public int driveTickGoal = 2 * -1000;
+	private int driveTickGoal = 2 * -1000;
+	private double degreesTurn = 0.0; // Helps prevent null by declaring a value
+	private double speed = 0.0;
 	
 	public DriveSubsystem(){
 		
@@ -48,20 +45,10 @@ public class DriveSubsystem extends Subsystem {
 		rightDriveEncoder = new Encoder(RobotMap.RIGHT_DRIVE_ENCODER_A, RobotMap.RIGHT_DRIVE_ENCODER_B, false, Encoder.EncodingType.k4X);
 	
 		gyro = new AHRS(SerialPort.Port.kMXP);
-		
-		// Set up the values for the HashMaps
-		// Encoder
-		encoderInfo.put(1, 198 * 17); // 17 is the ticks / inch ratio
-		encoderInfo.put(2, 233 * 17);
-		encoderInfo.put(3, 144 * 17);
-		encoderInfo.put(4, 144 * 17);
-		encoderInfo.put(5, 238 * 17);
-		// 
-		
-		
+		 
 	}
 	
-	public void display(){
+	public void display() {
 		SmartDashboard.putNumber("Encoder (Left Drive)", leftDriveEncoder.get());
 		SmartDashboard.putNumber("Encoder (Right Drive)", rightDriveEncoder.get());
 		SmartDashboard.putNumber("Gyro Yaw", gyro.getYaw());
@@ -70,47 +57,55 @@ public class DriveSubsystem extends Subsystem {
 	}
 	
 	public void initDefaultCommand() {
+		
+		
+		
 	}
 	
-	public void resetDriveEncoders(){
+	
+	public void resetDriveEncoders() {
 		leftDriveEncoder.reset();
 		rightDriveEncoder.reset();
 	}
 	
-	public void resetGyro(){
+	public void resetGyro() {
 		gyro.reset();
 	}
     
-    public void invertMotorsTrue(){
-    	drive.setInvertedMotor(RobotDrive.MotorType.kFrontLeft, true);
-    	drive.setInvertedMotor(RobotDrive.MotorType.kFrontRight, true);
-    	drive.setInvertedMotor(RobotDrive.MotorType.kRearLeft, true);
-    	drive.setInvertedMotor(RobotDrive.MotorType.kRearRight, true);
+	/**
+	 * This method will determine if the motors should or should not be inverted.
+	 * Depending on the boolean value passed in, this method will invert or normalize the motor
+	 * direction.
+	 * 
+	 * @param shouldInvert
+	 * boolean - true if the motors should be inverted, false for normalized motors
+	 * 
+	 * @author Seth Byrne
+	 */
+    public void invertMotors(boolean shouldInvert) {
+    	drive.setInvertedMotor(RobotDrive.MotorType.kFrontLeft, shouldInvert);
+    	drive.setInvertedMotor(RobotDrive.MotorType.kFrontRight, shouldInvert);
+    	drive.setInvertedMotor(RobotDrive.MotorType.kRearLeft, shouldInvert);
+    	drive.setInvertedMotor(RobotDrive.MotorType.kRearRight, shouldInvert);
     }
     
-    public void invertMotorsFalse(){
-    	drive.setInvertedMotor(RobotDrive.MotorType.kFrontLeft, false);
-    	drive.setInvertedMotor(RobotDrive.MotorType.kFrontRight, false);
-    	drive.setInvertedMotor(RobotDrive.MotorType.kRearLeft, false);
-    	drive.setInvertedMotor(RobotDrive.MotorType.kRearRight, false);
-    }
-    
-    public void driveStraightForward(){
-    	leftFront.set(-0.7);
-    	leftRear.set(-0.7);
-    	rightFront.set(0.7);
-    	rightRear.set(0.7);
-    	if(gyro.getYaw() > 2){
-    		rightFront.set(0.8);
-    		rightRear.set(0.8);
+    public void driveStraightForward() {
+    	leftFront.set(-speed); // -0.7
+    	leftRear.set(-speed);
+    	rightFront.set(speed); // 0.7
+    	rightRear.set(speed);
+    	
+    	if(gyro.getYaw() < -2) {
+    		leftFront.set(-(speed + 0.1)); // -0.8
+    		leftRear.set(-(speed + 0.1));
     	}
-    	if(gyro.getYaw() < -2){
-    		leftFront.set(-0.8);
-    		leftRear.set(-0.8);
+    	if(gyro.getYaw() > 2) {
+    		rightFront.set(speed + 0.1); // 0.8
+    		rightRear.set(speed + 0.1);
     	}
     }
     
-    public boolean isAtTarget(){
+    public boolean isAtTarget() {
     	if(leftDriveEncoder.get() > driveTickGoal){
     		return true;
     	}
@@ -119,14 +114,22 @@ public class DriveSubsystem extends Subsystem {
     	}
     }
     
-    public void stop(){
+    public void stop() {
     	leftFront.set(0);
     	leftRear.set(0);
     	rightFront.set(0);
     	rightRear.set(0);
     }   
     
-    public boolean isStopped(){
+    /**
+     * This method returns a boolean indicating if the robot is stopped.
+     * 
+     * @return
+     * boolean - true, if the robot is stopped, otherwise false
+     * 
+     * @author Seth Byrne
+     */
+    public boolean isStopped() {
     	if((leftFront.get() == 0) && (leftRear.get() == 0) 
     		&& (rightFront.get() == 0) && (rightRear.get() == 0)){
     		return true;
@@ -136,14 +139,14 @@ public class DriveSubsystem extends Subsystem {
     	}
     }
     
-    public void turnXdegrees(){
+    public void turnXdegrees() {
     	if (gyro.getYaw() > -degreesTurn ) {
     		leftFront.set(-0.4 + (-degreesTurn - gyro.getYaw())/180); 
 			leftRear.set(0.4 + (-degreesTurn - gyro.getYaw())/180);
 			rightFront.set(-0.4 + (-degreesTurn - gyro.getYaw())/180);
 			rightRear.set(-0.4 + (-degreesTurn - gyro.getYaw())/180);
 		}
-    	else if (gyro.getYaw() < (-degreesTurn - 3)){
+    	else if (gyro.getYaw() < (-degreesTurn - 3)) {
     		leftFront.set(0.4 - (-degreesTurn - gyro.getYaw())/180); 
 			leftRear.set(-0.4 - (-degreesTurn - gyro.getYaw())/180);
 			rightFront.set(0.4 - (-degreesTurn - gyro.getYaw())/180);
@@ -151,30 +154,13 @@ public class DriveSubsystem extends Subsystem {
     	}
     }
     
-    public boolean isTurnedX(){
-    	if((gyro.getYaw() < -degreesTurn) && (gyro.getYaw() > -degreesTurn - 3)){
+    public boolean isTurnedX() {
+    	if((gyro.getYaw() < -degreesTurn) && (gyro.getYaw() > -degreesTurn - 3)) {
     		return true;
     	}
     	else{
     		return false;
     	}
-    }
-    
-    /**
-     * This method will get the pre-programmed angle, drive distance, and speed from the HashMaps. You can then call the 
-     * isAtTarget and isTurnedX methods to use these values in operation.
-     * 
-     * @param position
-     * the position (1-5) of where the robot is
-     * @param defense
-     * the defense that the robot will be confronting
-     */
-    public void loadDriveInfo(int position, String defense) {
-    	
-    	driveTickGoal = encoderInfo.get(position);
-    	degreesTurn = angleInfo.get(position);
-    	// speed = speedInfo.get(defense);
-    	
     }
     
     // Get / Set methods
@@ -184,6 +170,20 @@ public class DriveSubsystem extends Subsystem {
     }
     public void setDriveTickGoal(int driveTickGoal) {
 		this.driveTickGoal = driveTickGoal;
+	}
+    
+    public double getDegreesTurn() {
+    	return degreesTurn;
+    }
+    public void setDegreesTurn(double degreesTurn) {
+		this.degreesTurn = degreesTurn;
+	}
+    
+    public double getSpeed() {
+		return speed;
+	}
+    public void setSpeed(double speed) {
+		this.speed = speed;
 	}
     
 }

@@ -1,7 +1,6 @@
 package org.usfirst.frc.team5712.robot.commands.groups;
 
-import org.usfirst.frc.team5712.robot.commands.SolenoidIn;
-import org.usfirst.frc.team5712.robot.commands.SolenoidOut;
+import org.usfirst.frc.team5712.robot.commands.SolenoidMove;
 import org.usfirst.frc.team5712.robot.commands.SpeedUpShooters;
 import org.usfirst.frc.team5712.robot.commands.StopShooter;
 
@@ -14,8 +13,8 @@ public class Shoot extends CommandGroup {
     
     public  Shoot() {
        addSequential(new SpeedUpShooters());
-       addSequential(new SolenoidOut());
+       addSequential(new SolenoidMove(false)); // false = out
        addParallel(new StopShooter());
-       addSequential(new SolenoidIn());
+       addSequential(new SolenoidMove(true)); // true = in
     }
 }

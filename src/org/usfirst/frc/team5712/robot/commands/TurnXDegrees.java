@@ -5,31 +5,31 @@ import org.usfirst.frc.team5712.robot.Robot;
 import edu.wpi.first.wpilibj.command.Command;
 
 /**
- *
+ *	@author Team 5712
  */
-public class AdjustArmUpEncoder extends Command {
-	
-    public AdjustArmUpEncoder() {
-        requires(Robot.shooterSubsystem);
+public class TurnXDegrees extends Command {
+
+    public TurnXDegrees() {
+    	requires(Robot.driveSubsystem);
     }
 
     protected void initialize() {
     }
 
     protected void execute() {
-    	Robot.shooterSubsystem.armUp();
+    	Robot.driveSubsystem.turnXdegrees();
     }
 
     protected boolean isFinished() {
-        return Robot.shooterSubsystem.isUp();
+        return Robot.driveSubsystem.isTurnedX();
     }
 
     protected void end() {
-    	Robot.shooterSubsystem.stopArm();
+    	Robot.driveSubsystem.stop();
     }
 
     protected void interrupted() {
-    	System.out.println("Adjustment of Shooter Arm Up: Interrupted");
+    	System.out.println("Turning to " + Robot.driveSubsystem.getDegreesTurn() + "degrees has been interrupted");
     	end();
     }
 }
