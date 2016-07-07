@@ -11,6 +11,7 @@ public class SpeedUpShooters extends Command {
 
     public SpeedUpShooters() {
        requires(Robot.shooterSubsystem);
+       setTimeout(1);
     }
 
     protected void initialize() {
@@ -21,7 +22,7 @@ public class SpeedUpShooters extends Command {
     }
 
     protected boolean isFinished() {
-        return Robot.shooterSubsystem.isFast();
+        return isTimedOut();
     }
 
     protected void end() {

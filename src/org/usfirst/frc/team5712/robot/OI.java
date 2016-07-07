@@ -63,7 +63,7 @@ public class OI {
 		shoot_ShootStickTrigger = new JoystickButton(shootStick, 1);
 		shoot_ShootStickTrigger.whenPressed(new Shoot());
 		intake_ShootStickButton = new JoystickButton(shootStick, 2);
-		intake_ShootStickButton.whenPressed(new Intake());
+		intake_ShootStickButton.whileHeld(new Intake());
 		
 		adjustArmUpEncoder_ShootStickButton = new JoystickButton(shootStick, 5);
 		adjustArmUpEncoder_ShootStickButton.whenPressed(new AdjustArmUpEncoder());
