@@ -11,7 +11,6 @@ import org.usfirst.frc.team5712.robot.OI;
 
 import edu.wpi.first.wpilibj.CameraServer;
 import edu.wpi.first.wpilibj.IterativeRobot;
-import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.CommandGroup;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
@@ -103,7 +102,7 @@ public class Robot extends IterativeRobot {
         willShoot = (boolean) shootChooser.getSelected();
                 
         autonomousExecuteCommand = new DriveAutonomous(defenseSelected, positionSelected, willShoot);
-        autonomousExecuteCommand.start();
+        if (autonomousExecuteCommand != null) autonomousExecuteCommand.start();
         
     }
 
