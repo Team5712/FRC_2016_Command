@@ -30,7 +30,7 @@ public class DriveSubsystem extends Subsystem {
 	
 	private int driveTickGoal = 2 * -1000;
 	private double degreesTurn = 0.0; // Helps prevent null by declaring a value
-	private double speed = 0.0;
+	private double speed = 0.5;
 	
 	public DriveSubsystem(){
 		
@@ -106,7 +106,7 @@ public class DriveSubsystem extends Subsystem {
     }
     
     public boolean isAtTarget() {
-    	if(leftDriveEncoder.get() > driveTickGoal){
+    	if(leftDriveEncoder.get() < driveTickGoal){
     		return true;
     	}
     	else{

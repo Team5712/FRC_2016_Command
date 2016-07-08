@@ -12,6 +12,7 @@ public class AutonomousPlanner extends Command {
 	
 	private String defense;
 	private int position;
+	private boolean isPlanned = false;
 	
 	private HashMap<Integer, Integer> encoderInfo = new HashMap<Integer, Integer>();
 	private HashMap<Integer, Double> angleInfo = new HashMap<Integer, Double>();
@@ -58,7 +59,7 @@ public class AutonomousPlanner extends Command {
 
 	@Override
 	protected boolean isFinished() {
-		return false;
+		return isPlanned;
 	}
 
 	@Override
@@ -82,11 +83,11 @@ public class AutonomousPlanner extends Command {
 		
 		// Set up the values for the HashMaps
 		// Encoder
-		encoderInfo.put(1, 198 * 17); // 17 is the ticks / inch ratio
-		encoderInfo.put(2, 233 * 17);
-		encoderInfo.put(3, 144 * 17);
-		encoderInfo.put(4, 144 * 17);
-		encoderInfo.put(5, 238 * 17);
+		encoderInfo.put(1, 198 * -17); // 17 is the ticks / inch ratio
+		encoderInfo.put(2, 233 * -17);
+		encoderInfo.put(3, 144 * -17);
+		encoderInfo.put(4, 144 * -17);
+		encoderInfo.put(5, 238 * -17);
 		
 		// Degrees
 		angleInfo.put(1, 60.0);
@@ -120,12 +121,16 @@ public class AutonomousPlanner extends Command {
     	
     	newDriveTickGoal = encoderInfo.get(position);
     	newDegreesTurn = angleInfo.get(position);
-    	newSpeed = speedInfo.get(defense);
+    	if(speedInfo.containsKey(defense)) {
+    		newSpeed = speedInfo.get(defense);
+    	} else {
+    		newSpeed = speedInfo.get("default");
+    	}
     	
     	Robot.driveSubsystem.setDriveTickGoal(newDriveTickGoal);
     	Robot.driveSubsystem.setDegreesTurn(newDegreesTurn);
     	Robot.driveSubsystem.setSpeed(newSpeed);
-    	
+    	isPlanned = true;
     }
 	
 }
