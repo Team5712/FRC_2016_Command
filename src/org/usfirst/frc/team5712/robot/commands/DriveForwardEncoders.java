@@ -8,17 +8,11 @@ import edu.wpi.first.wpilibj.command.Command;
  *
  */
 public class DriveForwardEncoders extends Command {
-	
-	/**
-	 * Drives forward until the tick goal (specified in the drive subsystem) is met.
-	 * 
-	 * @author Seth Byrne
-	 */
+
     public DriveForwardEncoders() {
     	requires(Robot.driveSubsystem);
     }
-    
-    
+
     protected void initialize() {
     }
 
@@ -27,9 +21,9 @@ public class DriveForwardEncoders extends Command {
     }
 
     protected boolean isFinished() {
-        return Robot.driveSubsystem.isAtTarget();
+        return Robot.driveSubsystem.isUnderLowbar();
     }
-    
+
     protected void end() {
     	Robot.driveSubsystem.stop();
     }
