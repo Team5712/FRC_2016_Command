@@ -31,40 +31,30 @@ public class Robot extends IterativeRobot {
 	public static PneumaticSubsystem pneumaticSubsystem = new PneumaticSubsystem();
 	
 	public static OI oi;
-	
-    //Autonomous commands
-    CommandGroup autonomousExecuteCommand;
-    double angleSelected = 0.0;
     
-    // Autonomous variables
-    String defenseSelected = "";
-    int positionSelected = 0;
-    boolean willShoot = true;
+    //Autonomous commands
+    CommandGroup autonomousSelected;
+    double angleSelected;
     
     //Autonomous Selector
-    SendableChooser defenseChooser, positionChooser, shootChooser;
+    SendableChooser autoChooser, angleChooser;
     
     //Camera Variables
     public int sessionFront;
     public Image frame;
     
     public void robotInit() {
-    	oi = new OI(); 
+		oi = new OI(); 
 		
-    	defenseChooser = new SendableChooser();
-//		autoChooser.addDefault("Lowbar", new LowbarAutonomous());
-//		autoChooser.addObject("Moat", new MoatAutonomous());
-    	defenseChooser = addAutoOptions(defenseChooser, "defense");
-		SmartDashboard.putData("Defense Chooser", defenseChooser);
+		autoChooser = new SendableChooser();
+		autoChooser.addDefault("Lowbar", new LowbarAutonomous());
+		autoChooser.addObject("Moat", new MoatAutonomous());
+		SmartDashboard.putData("Autonomous Mode Chooser", autoChooser);
 		
-		positionChooser = new SendableChooser();
-		positionChooser = addAutoOptions(positionChooser, "position");
-		SmartDashboard.putData("Position Chooser", positionChooser);
-		
-		shootChooser = new SendableChooser();
-		shootChooser.addDefault("Shoot", true); // Add the objects. Should the robot shoot or not in autonomous
-		shootChooser.addObject("No Shoot", false);
-		SmartDashboard.putData("Shoot Chooser", shootChooser);
+		angleChooser = new SendableChooser();
+		angleChooser.addDefault("120", 120);
+		angleChooser.addObject("150", 150);
+		SmartDashboard.putData("Angle Chooser", angleChooser);
 		
 		pneumaticSubsystem.compressor.setClosedLoopControl(true);
 		
@@ -77,7 +67,7 @@ public class Robot extends IterativeRobot {
 		shooterSubsystem.resetShooterEncoder();
     }
 	
-    public void disabledInit() {
+    public void disabledInit(){
 
     }
 	
@@ -86,23 +76,17 @@ public class Robot extends IterativeRobot {
 	}
 
     public void autonomousInit() {
-        System.out.println("Defense Selected: " + defenseChooser.getSelected());
-        System.out.println("Position Selected: " + positionChooser.getSelected());
+        System.out.println("Autonomous Selected: " + autoChooser.getSelected());
+        System.out.println("Angle Selected: " + angleChooser.getSelected());
         
     	pneumaticSubsystem.in();
         driveSubsystem.resetDriveEncoders();
         driveSubsystem.resetGyro();
         shooterSubsystem.resetShooterEncoder();
         
-//        autonomousSelected = (CommandGroup) autoChooser.getSelected();
-//        angleSelected = (int) angleChooser.getSelected();
-//        autonomousSelected.start();
-        defenseSelected = (String) defenseChooser.getSelected();
-        positionSelected = (int) positionChooser.getSelected();
-        willShoot = (boolean) shootChooser.getSelected();
-                
-        autonomousExecuteCommand = new DriveAutonomous(defenseSelected, positionSelected, willShoot);
-        if (autonomousExecuteCommand != null) autonomousExecuteCommand.start();
+        autonomousSelected = (CommandGroup) autoChooser.getSelected();
+        angleSelected = (int) angleChooser.getSelected();
+        autonomousSelected.start();
         
     }
 
@@ -114,7 +98,7 @@ public class Robot extends IterativeRobot {
     }
 
     public void teleopInit() {
-    	if (autonomousExecuteCommand != null) autonomousExecuteCommand.cancel();
+    	if (autonomousSelected != null) autonomousSelected.cancel();
     	
     	driveSubsystem.resetDriveEncoders();
     	driveSubsystem.resetGyro();	
@@ -136,62 +120,6 @@ public class Robot extends IterativeRobot {
     
     public void testPeriodic() {
     	LiveWindow.run();
-    }
-    
-    // Custom Methods
-    
-    /**
-     * This method will add all of the defenses and position selections that are desired. This eliminates
-     * a large block of statements in the robotInit method.
-     * 
-     * @param chooser
-     * SendableChooser - the chooser to add the selections to
-     * @param optionsToAdd
-     * String - the options to add (defense / position)
-     * @return
-     * The updated SendableChooser object
-     * 
-     * @author Seth Byrne
-     */
-    private SendableChooser addAutoOptions(SendableChooser chooser, String optionsToAdd) {
-    	
-    	// Use proper English and capitalization for these names, as they will
-    	// be displayed on the SmartDashboard. Later, we can make these lower-case
-    	// and replace the spaces with underscores. This is basically to keep consistent
-    	// to programming naming
-    	final String[] defenses = {"Portcullis", "Cheval de Frise", // A
-    								"Ramparts", "Moat", // B
-    								"Drawbridge", "Sally Port", // C
-    								"Rock Wall", "Rough Terrain", // D
-    								"Low Bar", // Required
-    								"No Cross"}; // Custom
-    	
-    	final Integer[] positions = {1, 2, 3, 4, 5};
-    	
-    	
-    	if(optionsToAdd.equalsIgnoreCase("defense")) {
-    		
-    		// Defenses
-    		for(int d = 0; d < defenses.length; d++) {
-    			// Instead of storing a command, we will store the name of the defense.
-    			// This will be passed in as a parameter in the AutonomousPlanner class
-    			// to determine how we operate during autonomous
-    			chooser.addObject(defenses[d], defenses[d].toLowerCase().replaceAll(" ", "_"));
-    			// For the object, make it lower-case and replace the spaces with underscores
-    		}
-    		
-    	} else {
-    		
-    		// Positions
-    		for(int d = 0; d < positions.length; d++) {
-    			chooser.addObject("Position #" + positions[d], positions[d]);
-    		}
-    		
-    	}
-    	
-    	// Return the chooser with the options added
-    	return chooser;
-    	
     }
     
 }

@@ -43,37 +43,37 @@ public class OI {
 	public OI() {
 		
 		//driveStick Button Commands
-		shiftGear_DriveStickTrigger = new JoystickButton(driveStick, RobotMap.SHIFT_GEAR_TRIGGER);
+		shiftGear_DriveStickTrigger = new JoystickButton(driveStick, 1);
 		shiftGear_DriveStickTrigger.whileHeld(new ShiftGear());
 		
-		invertMotors_DriveStickButton = new JoystickButton(driveStick, RobotMap.INVERT_MOTORS_BUTTON);
-		invertMotors_DriveStickButton.whenPressed(new InvertMotors(true));
-		normalizeMotors_DriveStickButton = new JoystickButton(driveStick, RobotMap.NORMALIZE_MOTORS_BUTTON);
-		normalizeMotors_DriveStickButton.whenPressed(new InvertMotors(false));
+		invertMotors_DriveStickButton = new JoystickButton(driveStick, 3);
+		invertMotors_DriveStickButton.whenPressed(new InvertMotorsTrue());
+		normalizeMotors_DriveStickButton = new JoystickButton(driveStick, 4);
+		normalizeMotors_DriveStickButton.whenPressed(new InvertMotorsFalse());
 		
-		turnXdegrees_DriveStickButton = new JoystickButton(driveStick, RobotMap.TURN_DEGREES_BUTTON);
-		turnXdegrees_DriveStickButton.whenPressed(new TurnXDegrees());
+		turnXdegrees_DriveStickButton = new JoystickButton(driveStick, 6);
+		turnXdegrees_DriveStickButton.whenPressed(new TurnXdegrees());
 		
-		solenoidOut_DriveStickButton = new JoystickButton(driveStick, RobotMap.SOLENOID_OUT_BUTTON);
-		solenoidOut_DriveStickButton.whenPressed(new SolenoidMove(false));
-		solenoidIn_DriveStickButton = new JoystickButton(driveStick, RobotMap.SOLENOID_IN_BUTTON);
-		solenoidIn_DriveStickButton.whenPressed(new SolenoidMove(true));
+		solenoidOut_DriveStickButton = new JoystickButton(driveStick, 7);
+		solenoidOut_DriveStickButton.whenPressed(new SolenoidOut());
+		solenoidIn_DriveStickButton = new JoystickButton(driveStick, 8);
+		solenoidIn_DriveStickButton.whenPressed(new SolenoidIn());
 		
 		//shootStick Button Commands
-		shoot_ShootStickTrigger = new JoystickButton(shootStick, RobotMap.SHOOT_TRIGGER);
+		shoot_ShootStickTrigger = new JoystickButton(shootStick, 1);
 		shoot_ShootStickTrigger.whenPressed(new Shoot());
-		intake_ShootStickButton = new JoystickButton(shootStick, RobotMap.INTAKE_BUTTON);
+		intake_ShootStickButton = new JoystickButton(shootStick, 2);
 		intake_ShootStickButton.whileHeld(new Intake());
 		
-		adjustArmUpEncoder_ShootStickButton = new JoystickButton(shootStick, RobotMap.ARM_UP_BUTTON);
+		adjustArmUpEncoder_ShootStickButton = new JoystickButton(shootStick, 5);
 		adjustArmUpEncoder_ShootStickButton.whenPressed(new AdjustArmUpEncoder());
-		adjustArmDownEncoder_ShootStickButton = new JoystickButton(shootStick, RobotMap.ARM_DOWN_BUTTON);
+		adjustArmDownEncoder_ShootStickButton = new JoystickButton(shootStick, 6);
 		adjustArmDownEncoder_ShootStickButton.whenPressed(new AdjustArmDownEncoder());
 		
-		solenoidOut_ShootStickButton = new JoystickButton(shootStick, RobotMap.SOLENOID_OUT_BUTTON_2);
-		solenoidOut_ShootStickButton.whenPressed(new SolenoidMove(false));
-		solenoidIn_ShootStickButton = new JoystickButton(shootStick, RobotMap.SOLENOID_IN_BUTTON_2);
-		solenoidIn_ShootStickButton.whenPressed(new SolenoidMove(true));
+		solenoidOut_ShootStickButton = new JoystickButton(shootStick, 10);
+		solenoidOut_ShootStickButton.whenPressed(new SolenoidOut());
+		solenoidIn_ShootStickButton = new JoystickButton(shootStick, 11);
+		solenoidIn_ShootStickButton.whenPressed(new SolenoidIn());
 		
 	}
 }
